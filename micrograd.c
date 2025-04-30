@@ -34,7 +34,7 @@ void div_backward(Value *self, Value *children[2]) {
     float x = children[0]->data;
     float y = children[1]->data;
     // z = x / y, dz/dx = 1/y, dz/dy = -x / y^2
-    children[0]->grad += (1.0 / x) * self->grad;
+    children[0]->grad += (1.0 / y) * self->grad;
     children[1]->grad += (-x / (y*y)) * self->grad;
 }
 
@@ -209,8 +209,7 @@ void free_graph(Value *v) {
 }
 
 void zero_grad(Value *v) {
-
-
+// TODO
 }
 
 
