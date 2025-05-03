@@ -198,7 +198,7 @@ int build_topo(Value **topo, int i, Value *v) { // returns number of values adde
 }
 
 void free_graph(Value *v) {
-    if (v == NULL || !v->visited) return;
+    if (v == NULL || v->visited) return;
 
     v->visited = 1;
 
@@ -208,8 +208,19 @@ void free_graph(Value *v) {
     if (v->mallocated) free(v);
 }
 
+void zero_recurse(Value *v) { 
+    if (v == NULL || v->visited) return; // base case
+
+    v->grad = 0;
+    v->visited = 1;
+
+    zero_recurse(v->prev[0]);
+    zero_recurse(v->prev[1]);
+}
 void zero_grad(Value *v) {
-// TODO
+    clear_visited(v);
+    zero_recurse(v);
+    clear_visited(v);
 }
 
 
@@ -259,6 +270,10 @@ int main() {
     y.label = 'y';
     backprop(&y);
 
+    Value test1 = newValue(9.81, NULL);
+
+    zero_grad(&y);
+    print_value(&y);
 
     free_graph(&y);
     return 0;
